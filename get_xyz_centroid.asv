@@ -1,5 +1,0 @@
-function res = get_xyz_centroid(pc)
-
-xc = max(pc())
-
-end
