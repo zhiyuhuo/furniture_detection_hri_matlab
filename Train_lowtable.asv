@@ -1,0 +1,22 @@
+%
+clc;
+clear;
+close all;
+%
+
+% low table - 0
+
+lib = load('furniturelib.mat');
+featurelib = lib.furniturelib.featurelib;
+labellib = lib.furniturelib.labellib;
+
+features = featurelib;
+labels = -ones(size(features,1), 1);
+labels(labellib == 0) = 1;
+
+% subfeatures = features(labellib == 1,:);
+
+model= svmtrain(features, labels,'Kernel_Function','rbf');
+groups = svmclassify(model,features);
+
+k = [labels, groups]

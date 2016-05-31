@@ -1,0 +1,30 @@
+%
+clc;
+clear;
+close all;
+%
+
+kernelstr = 'rbf';
+categorynameslist = {};
+flist = dir('models');
+for i = 1:length(flist)
+    if (~isempty(find(strcmp(flist(i).name, 'model'))))
+        categorynameslist{end+1} = flist(i).name(length(['model_' kernelstr]))
+    end    
+end
+
+categorylist = [0 1 2 3 4];
+% categorylist = [0];
+categorynameslist = {'table_low', 'chair', 'table_high', 'couch', 'bed'};
+
+
+for C = 1:length(categorylist)
+    category = categorylist(C);
+    model = load(['models/model_' kernelstr '_' num2str(category) '.mat']);
+    model = model.model;
+    
+    folderdir = ['models_for_ros/' categorynameslist{C}];
+    mkdir(folderdir);
+    save_model_to_dir(folderdir, model);
+end
+

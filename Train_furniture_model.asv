@@ -1,0 +1,47 @@
+%
+clc;
+clear;
+close all;
+%
+
+    lib = load('furniturelib.mat');
+    featurelib = lib.furniturelib.featurelib;
+    labellib = lib.furniturelib.labellib;
+categorylist = 
+% categorylist = [0];
+
+for C = 1:length(categorylist)
+
+    category = categorylist(C);
+
+%     features = featurelib;
+    features = featurelib(1:2:end,:);
+    labels = labellib(1:2:end,:);
+    
+    labels(labels ~= category) = -1;
+    labels(labels == category) = 1;
+    
+    featuret = featurelib(2:2:end,:);
+    labelt = labellib(2:2:end,:);
+    
+    labelt(labelt ~= category) = -1;
+    labelt(labelt == category) = 1;
+
+    kernelstr = 'rbf';
+    
+    rbfsigma = 10;
+    model = svmtrain(features, labels,'Kernel_Function', kernelstr, 'rbf_sigma', rbfsigma);
+
+    groupt = svmclassify(model,featuret);
+
+    k = labelt.*groupt;
+    aws = find(k < 0);
+
+    disp(C);
+    disp(length(model.SupportVectors));
+    disp(aws);
+    model.Sigma = rbfsigma;
+    
+    save(['models/model_' kernelstr '_' num2str(category) '.mat'], 'model');
+
+end
